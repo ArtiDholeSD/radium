@@ -20,7 +20,8 @@ mobile:{
 },
 collegeId:{
     type:ObjectId,
-    ref: 'college'
+    ref: 'college',
+    required: 'collegeId is mandatory'
 }  ,
 isDeleted:{
     type: Boolean,

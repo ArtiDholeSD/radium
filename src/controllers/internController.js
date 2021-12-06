@@ -22,7 +22,9 @@ const isValid = function(value) {
 
 const isValidRequestBody = function(requestBody) {
     return Object.keys(requestBody).length > 0
+    
 }
+
 
 const isValidObjectId = function(objectId) {
     return mongoose.Types.ObjectId.isValid(objectId)
@@ -31,13 +33,17 @@ const isValidObjectId = function(objectId) {
 
 const registerIntern = async function (req, res) {
     try {
+
         const requestBody = req.body;
-        if(!isValidRequestBody(requestBody)) {
-            res.status(400).send({status: false, message: 'Invalid request parameters. Please provide author details'})
+       // console.log(Object.keys(requestBody))  ----->[ 'name', 'email', 'mobile', 'collegeId' ]
+        // console.log(Object.Values(requestBody))  ----->[ provide values ]
+
+        if(!isValidRequestBody(requestBody)) {//       Data>0 => !true
+            res.status(400).send({status: false, message: 'Invalid request parameters. Please provide intern details'})
             return
         }
 
-        // Extract params
+    
         const {name, email,mobile, collegeId,isDeleted} = requestBody; // Object destructing
 
         // Validation starts
