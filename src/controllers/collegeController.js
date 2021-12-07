@@ -12,13 +12,18 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0
 }
 
-const ValidURL = function (userInput) {
-    var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-    if (res == null)
-        return false;
-    else
-        return true;
+// const ValidURL = function (userInput) {
+//     var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
+//     if (res == null)
+//         return false;
+//     else
+//         return true;
+// }
+const isImgLink= function (url) {
+    if(typeof url !== 'string') return false;
+    return(url.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) != null);
 }
+
 
 
 const createCollege = async function (req, res) {
@@ -45,11 +50,11 @@ const createCollege = async function (req, res) {
             res.status(400).send({ status: false, message: 'logolink is required' })
             return
         }
-        if (!ValidURL(logoLink)) {
+        if (!isImgLink(logoLink)) {
             res.status(400).send({ status: false, message: 'invalid logolink' })
             return
         }
-        console.log(ValidURL(logoLink))
+       // console.log(ValidURL(logoLink))
         // Validation end
 
         const Data = { name, fullName, logoLink, isDeleted }
@@ -141,3 +146,6 @@ module.exports.getAllIntern = getAllIntern;
 
 
 
+// console.log(isImgLink('https://example.com/img.jpg')); // true
+// console.log(isImgLink('https://example.com/any-route?param=not-img-file.jpg')); // false
+// console.log(isImgLink('https://example.com/img.jpg?param=123')); // true
