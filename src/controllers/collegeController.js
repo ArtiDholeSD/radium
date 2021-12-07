@@ -123,7 +123,7 @@ const getAllIntern = async function (req, res) {
         if (!result2) {
             res.status(400).send({ status: false, msg: 'data is not present' })
         }
-        //  console.log(result2)
+       
 
         res.status(201).send({status: true, data: result2})
     } catch (error) {
