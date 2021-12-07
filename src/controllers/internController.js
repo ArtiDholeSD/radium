@@ -107,6 +107,11 @@ const registerIntern = async function (req, res) {
             res.status(400).send({ status: false, message: `${email} email address is already registered` })
             return
         }
+
+        if (isDeleted == true) {
+         res.status(400).send({ status: false, message: "Cannot input isDeleted as true while registering" });
+         return
+          }
         // Validation ends
 
 

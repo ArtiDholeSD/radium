@@ -55,6 +55,7 @@ const createCollege = async function (req, res) {
             return
         }
        // console.log(ValidURL(logoLink))
+      
         // Validation end
 
         const Data = { name, fullName, logoLink, isDeleted }
@@ -85,16 +86,19 @@ The response structure should look like this
 const getAllIntern = async function (req, res) {
     try {
 
-        let collegeName = req.query.collegeName;
 
+
+        let collegeName = req.query.collegeName;
+        
         if (!collegeName) {
             res.status(400).send({ status: false, msg: 'put CollegeName' })
         }
 
-        let collegeDetail = await collegeModel.findOne({ name: collegeName })
+        let collegeDetail = await collegeModel.findOne({ name: collegeName , isDeleted: false })
 
-        if (!collegeDetail) {
-            res.status(400).send({ status: false, msg: 'college name not present' })
+        if (!collegeDetail)
+             {
+            return res.status(400).send({ status: false, msg: 'college name not present' })//ask to mentor
         }
 
         console.log(collegeDetail._id)
