@@ -14,7 +14,7 @@ const isValidRequestBody = function (requestBody) {
 
 const ValidURL = function (userInput) {
     var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-    if(res == null)
+    if (res == null)
         return false;
     else
         return true;
@@ -23,7 +23,7 @@ const ValidURL = function (userInput) {
 
 const createCollege = async function (req, res) {
     try {
-           // Validation starts
+        // Validation starts
         const requestBody = req.body;
         if (!isValidRequestBody(requestBody)) {
             res.status(400).send({ status: false, message: 'Invalid request parameters. Please provide college details' })
@@ -31,7 +31,7 @@ const createCollege = async function (req, res) {
         }
         const { name, fullName, logoLink, isDeleted } = requestBody; // Object destructing
 
-     
+
         if (!isValid(name)) {
             res.status(400).send({ status: false, message: 'name is required' })
             return
@@ -40,8 +40,13 @@ const createCollege = async function (req, res) {
             res.status(400).send({ status: false, message: 'fullName is required' })
             return
         }
-        if (!ValidURL(logoLink)) {
+
+        if (!isValid(logoLink)) {
             res.status(400).send({ status: false, message: 'logolink is required' })
+            return
+        }
+        if (!ValidURL(logoLink)) {
+            res.status(400).send({ status: false, message: 'invalid logolink' })
             return
         }
         console.log(ValidURL(logoLink))
@@ -87,28 +92,40 @@ const getAllIntern = async function (req, res) {
             res.status(400).send({ status: false, msg: 'college name not present' })
         }
 
-       console.log(collegeDetail._id )
+        console.log(collegeDetail._id)
 
-        let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted:false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
-         console.log( internDetail)
+        let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
+        console.log(internDetail)
 
-        if ( internDetail.length===0) {
-            return res.status(400).send({ status: false, msg: 'intern Details not present' })
-        }
+
+
 
         let result = {
             name: collegeDetail.name,
             FullName: collegeDetail.fullName,
             LogoLink: collegeDetail.logoLink,
+
+        }
+
+
+        if (internDetail.length === 0) {
+            return res.status(201).send({ status: true, result, msg: 'intern Details not present' })
+        }
+
+        let result2 = {
+            name: collegeDetail.name,
+            FullName: collegeDetail.fullName,
+            LogoLink: collegeDetail.logoLink,
             interests: internDetail
         }
-       
-        if (!result) {
+
+
+        if (!result2) {
             res.status(400).send({ status: false, msg: 'data is not present' })
         }
-        //  console.log(result)
+        //  console.log(result2)
 
-        res.status(200).send(result)
+        res.status(201).send({status: true, data: result2})
     } catch (error) {
         res.status(500).send({ status: false, msg: error.message })
     }
