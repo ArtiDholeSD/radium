@@ -44,11 +44,17 @@ const registerIntern = async function (req, res) {
         }
 
 
-        const { name, email, mobile, collegeId, isDeleted } = requestBody; // Object destructing
+        let { name,  mobile, email, collegeName,isDeleted } = requestBody; // Object destructing
 
         // Validation starts
         if (!isValid(name)) {
             res.status(400).send({ status: false, message: 'name is required' })
+            return
+        }
+        const isNameAlreadyPresent = await internModel.findOne({ name }); // {email: email} object shorthand property
+
+        if (isNameAlreadyPresent) {
+            res.status(400).send({ status: false, message: `${name} is already present` })
             return
         }
         // mobile validation starts
@@ -56,6 +62,8 @@ const registerIntern = async function (req, res) {
             res.status(400).send({ status: false, message: `mobile no is required` })
             return
         }
+
+          mobile = mobile.trim();
 
         if (!(/^(\+\d{1,3}[- ]?)?\d{10}$/.test(mobile))) {
             res.status(400).send({ status: false, message: `mobile no should be valid mobile number` })
@@ -70,31 +78,12 @@ const registerIntern = async function (req, res) {
         }
         // mobile validation ends
 
-
-        // college Id cheking starts
-        if (!isValid(collegeId)) {
-            res.status(400).send({ status: false, message: `collegeId no is required` })
-            return
-        }
-
-        if (!isValidObjectId(collegeId)) {
-            res.status(400).send({ status: false, message: `${collegeId} is not a valid college id` })
-            return
-        }
-        const college = await collegeModel.findById(collegeId);
-
-        if (!college) {
-            res.status(400).send({ status: false, message: `college id  does not exit` })
-            return
-        }
-        // college Id cheking ends
-
-
         // email validation starts
         if (!isValid(email)) {
             res.status(400).send({ status: false, message: `Email is required` })
             return
         }
+        email = email.trim();
 
         if (!(/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email))) {
             res.status(400).send({ status: false, message: `Email should be a valid email address` })
@@ -107,15 +96,29 @@ const registerIntern = async function (req, res) {
             res.status(400).send({ status: false, message: `${email} email address is already registered` })
             return
         }
+        //
+        // college Id cheking starts
+       
+        if (!isValid(collegeName)) {
+            res.status(400).send({ status: false, message: `collegeName is required` })
+            return
+        }
 
-        if (isDeleted == true) {
-         res.status(400).send({ status: false, message: "Cannot input isDeleted as true while registering" });
-         return
-          }
-        // Validation ends
+        const college =  await collegeModel.findOne({ name:collegeName,isDeleted:false }); 
+       
+        
+        if (!college) {
+            res.status(400).send({ status: false, message: `college  does not exit or deleted` })
+            return
+        }
+        
+        // college Id cheking ends
 
-
-        const savedInterData = { name, email, mobile, collegeId, isDeleted }
+         let collegeId = college._id;
+    
+         req.body.collegeId = collegeId;
+        
+        const savedInterData = { name, email, mobile, collegeName, collegeId, isDeleted }
         const newIntern = await internModel.create(savedInterData);
         res.status(201).send({ status: true, message: `intern is created successfully`, data: newIntern })
 

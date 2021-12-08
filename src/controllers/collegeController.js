@@ -34,13 +34,22 @@ const createCollege = async function (req, res) {
             res.status(400).send({ status: false, message: 'Invalid request parameters. Please provide college details' })
             return
         }
-        const { name, fullName, logoLink, isDeleted } = requestBody; // Object destructing
+            let  { name, fullName, logoLink, isDeleted } = requestBody; // Object destructing
 
 
         if (!isValid(name)) {
             res.status(400).send({ status: false, message: 'name is required' })
             return
         }
+        name = name.trim();
+
+        let isNameAlreadyUsed = await collegeModel.findOne({name}); 
+
+        if(isNameAlreadyUsed) {
+            res.status(400).send({status: false, message: `${name} is already registered`})
+            return
+        }
+
         if (!isValid(fullName)) {
             res.status(400).send({ status: false, message: 'fullName is required' })
             return
@@ -55,7 +64,10 @@ const createCollege = async function (req, res) {
             return
         }
        // console.log(ValidURL(logoLink))
-      
+    //    if (isDeleted) {  ///(isDeleted = true) or ==  or ===
+    //     res.status(400).send({ status: false, message: "Cannot input isDeleted as true while registering" })
+    //     return
+    //      }
         // Validation end
 
         const Data = { name, fullName, logoLink, isDeleted }
@@ -63,7 +75,7 @@ const createCollege = async function (req, res) {
         console.log(savedData)
         res.status(201).send({ status: true, data: savedData })
     } catch (error) {
-        res.status(500).send({ status: false, msg: error.message })//specifies which error 
+        res.status(500).send({ status: false, msg: error })//specifies which error 
         console.log(error)
     }
 }
@@ -91,7 +103,7 @@ const getAllIntern = async function (req, res) {
         let collegeName = req.query.collegeName;
         
         if (!collegeName) {
-            res.status(400).send({ status: false, msg: 'put CollegeName' })
+           return res.status(400).send({ status: false, msg: 'put CollegeName' })
         }
 
         let collegeDetail = await collegeModel.findOne({ name: collegeName , isDeleted: false })
@@ -106,17 +118,12 @@ const getAllIntern = async function (req, res) {
         let internDetail = await internModel.find({ collegeId: collegeDetail._id, isDeleted: false }).select({ _id: 1, name: 1, email: 1, mobile: 1 })
         console.log(internDetail)
 
-
-
-
-        let result = {
+      let result = {
             name: collegeDetail.name,
             FullName: collegeDetail.fullName,
             LogoLink: collegeDetail.logoLink,
 
         }
-
-
         // if (internDetail.length === 0) {
         //     return res.status(201).send({ status: true, result, msg: 'intern Details not present' })
         // }
@@ -127,17 +134,14 @@ const getAllIntern = async function (req, res) {
             LogoLink: collegeDetail.logoLink,
             interests: internDetail
         }
-
-
-        // if (!result2) {
+         // if (!result2) {
         //     res.status(400).send({ status: false, msg: 'data is not present' })
         // }
-       
-        
+         
         if (internDetail.length === 0) {
             return res.status(201).send({ status: true, result, msg: 'intern Details not present' })
         }else{
-            res.status(201).send({status: true, data: result2})
+            res.status(200).send({status: true, data: result2})
         }
 
         

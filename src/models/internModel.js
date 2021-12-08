@@ -4,18 +4,21 @@ const ObjectId = mongoose.Schema.Types.ObjectId
 const internSchema= new mongoose.Schema({
 name:{
     type: String,
-    required: 'intern name is mandatory'
+    required: 'intern name is mandatory',
+    trim:true
 },
 email:{
     type: String,
     required: 'email is mandatory',
     unique: 'this email is already being use',
+    trim:true//do in controller too
  
 } ,
 mobile:{
     type: String,
     required: 'mobile number is mandatory',
     unique: 'this mobile number is already being used', 
+    trim:true
     // mobile validaor
 },
 collegeId:{
