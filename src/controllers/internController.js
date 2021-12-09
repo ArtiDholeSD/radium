@@ -51,12 +51,12 @@ const registerIntern = async function (req, res) {
             res.status(400).send({ status: false, message: 'name is required' })
             return
         }
-        const isNameAlreadyPresent = await internModel.findOne({ name }); // {email: email} object shorthand property
+        // const isNameAlreadyPresent = await internModel.findOne({ name }); // {email: email} object shorthand property
 
-        if (isNameAlreadyPresent) {
-            res.status(400).send({ status: false, message: `${name} is already present` })
-            return
-        }
+        // if (isNameAlreadyPresent) {
+        //     res.status(400).send({ status: false, message: `${name} is already present` })
+        //     return
+        // }
         // mobile validation starts
         if (!isValid(mobile)) {
             res.status(400).send({ status: false, message: `mobile no is required` })
@@ -118,7 +118,7 @@ const registerIntern = async function (req, res) {
     
          req.body.collegeId = collegeId;
         
-        const savedInterData = { name, email, mobile, collegeName, collegeId, isDeleted }
+        const savedInterData = { name, email, mobile, collegeId, isDeleted }
         const newIntern = await internModel.create(savedInterData);
         res.status(201).send({ status: true, message: `intern is created successfully`, data: newIntern })
 
