@@ -9,8 +9,6 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 
-
-
 const mongoose = require('mongoose')
 
 mongoose.connect("mongodb+srv://users-open-to-all:hiPassword123@cluster0.uh35t.mongodb.net/group3Database?retryWrites=true&w=majority", {useNewUrlParser: true})
@@ -26,7 +24,6 @@ app.listen(process.env.PORT || 3000, function() {
 
 
 
-//mongodb+srv://users-open-to-all:hiPassword123@cluster0.uh35t.mongodb.net/mohammed-mubarak-ansari?retryWrites=true&w=majority
 
 
 

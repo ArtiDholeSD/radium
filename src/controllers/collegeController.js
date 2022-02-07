@@ -12,13 +12,6 @@ const isValidRequestBody = function (requestBody) {
     return Object.keys(requestBody).length > 0
 }
 
-// const ValidURL = function (userInput) {
-//     var res = userInput.match(/(http(s)?:\/\/.)?(www\.)?[-a-zA-Z0-9@:%._\+~#=]{2,256}\.[a-z]{2,6}\b([-a-zA-Z0-9@:%_\+.~#?&//=]*)/g);
-//     if (res == null)
-//         return false;
-//     else
-//         return true;
-// }
 const isImgLink= function (url) {
     if(typeof url !== 'string') return false;
     return(url.match(/^http[^\?]*.(jpg|jpeg|gif|png|tiff|bmp)(\?(.*))?$/gmi) != null);
@@ -34,7 +27,8 @@ const createCollege = async function (req, res) {
             res.status(400).send({ status: false, message: 'Invalid request parameters. Please provide college details' })
             return
         }
-            let  { name, fullName, logoLink, isDeleted } = requestBody; // Object destructing
+           
+        let { name, fullName, logoLink } = requestBody; // Object destructing
 
 
         if (!isValid(name)) {
@@ -64,18 +58,15 @@ const createCollege = async function (req, res) {
             return
         }
        // console.log(ValidURL(logoLink))
-    //    if (isDeleted) {  ///(isDeleted = true) or ==  or ===
-    //     res.status(400).send({ status: false, message: "Cannot input isDeleted as true while registering" })
-    //     return
-    //      }
+ 
         // Validation end
 
-        const Data = { name, fullName, logoLink, isDeleted }
+        const Data = { name, fullName, logoLink }
         let savedData = await collegeModel.create(Data)
         console.log(savedData)
         res.status(201).send({ status: true, data: savedData })
     } catch (error) {
-        res.status(500).send({ status: false, msg: error })//specifies which error 
+        res.status(500).send({ status: false, msg: error.message })//specifies which error 
         console.log(error)
     }
 }
@@ -87,9 +78,6 @@ GET /functionup/collegeDetails
 Returns the college details for the requested college (Expect a query parameter by the name collegeName. This is anabbreviated college name. For example iith)
 Returns the list of all interns who have applied for internship at this college.
 The response structure should look like this
-
-
-
 */
 
 
@@ -97,8 +85,6 @@ The response structure should look like this
 //Q 3 
 const getAllIntern = async function (req, res) {
     try {
-
-
 
         let collegeName = req.query.collegeName;
         

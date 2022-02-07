@@ -44,7 +44,7 @@ const registerIntern = async function (req, res) {
         }
 
 
-        let { name,  mobile, email, collegeName,isDeleted } = requestBody; // Object destructing
+        let { name,  mobile, email, collegeName} = requestBody; // Object destructing
 
         // Validation starts
         if (!isValid(name)) {
@@ -118,7 +118,7 @@ const registerIntern = async function (req, res) {
     
          req.body.collegeId = collegeId;
         
-        const savedInterData = { name, email, mobile, collegeId, isDeleted }
+        const savedInterData = { name, email, mobile, collegeId }
         const newIntern = await internModel.create(savedInterData);
         res.status(201).send({ status: true, message: `intern is created successfully`, data: newIntern })
 
